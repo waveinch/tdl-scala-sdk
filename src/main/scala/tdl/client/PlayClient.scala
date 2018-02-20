@@ -30,8 +30,8 @@ class PlayClient(username:String,authCode:String, endpoint:String)(implicit ec:E
       .get().map{ response =>
         val body = response.body
         val json = parse(body)
-        val decoded = json.toOption.map(_.as[T])
-        decoded.flatMap(_.toOption)
+        val decoded = json.right.toOption.map(_.as[T])
+        decoded.flatMap(_.right.toOption)
       }
   }
 }

@@ -63,15 +63,45 @@ case class FormProperties(
                            customClass: Option[String] = None,
                            color: Option[String] = None, // #cccccc notation
                            textColor: Option[String] = None,
-                           warningOverlapGlobal: Boolean = false, // unico degli unici
-                           warningOverlap: Boolean = false,
-                           forceNoOverlap: Boolean = false,
                            showOnlyBusy: Boolean = false,
+                           overlaps:OverlapsProperties,
                            dateField:Option[String] = None,
                            labels: List[String], // lista di field id che compongono la label del form
                            draft: Option[FormDraftDefinition],
-                           enableChangeWith: Option[List[String]] // lista di form id con il quale si vuole abilitare il cambio di tipo form
+                           `public`:Option[Boolean] = None,
+                           notification: Option[NotificationProperties],
+                           moves: Option[MovesProperties]
                          )
+
+case class OverlapsProperties(
+                               warningGlobal: Boolean = false, // unico degli unici
+                               warning: Boolean = false,
+                               forceNoOverlap: Boolean = false
+
+                             )
+
+case class NotificationProperties(
+                                   owner:NotificationVector,
+                                   write:NotificationVector,
+                                   read:NotificationVector
+                                 ) {
+  def enabled = owner.enabled || write.enabled || read.enabled
+}
+
+case class NotificationVector(email:Boolean) {
+  def enabled = email
+}
+
+case class MovesProperties(
+                            copyToTeam:Boolean,
+                            moveToTeam:Boolean,
+                            changeToForm:Seq[String], // lista di form id con il quale si vuole abilitare il cambio di tipo form
+                            copyToForm:Seq[String], // lista di form id con il quale si vuole abilitare il cambio di tipo form
+                            actions:Seq[FormAction]
+                          )
+
+case class FormAction(name:String,copy:Boolean,mask:Json)
+
 
 case class CalculatedFields(name:String, expression:String)
 
